@@ -7,10 +7,10 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 
-
-authRoutes.get("/login", (req, res, next) => {
-  res.render("auth/login", { "message": req.flash("error") });
-});
+// TODO: do we need this for login (after wednesday) -mb
+// authRoutes.get("/login", (req, res, next) => {
+//   res.render("auth/login", { "message": req.flash("error") });
+// });
 
 authRoutes.post("/login", passport.authenticate("local", {
   successRedirect: "/",
@@ -18,10 +18,10 @@ authRoutes.post("/login", passport.authenticate("local", {
   failureFlash: true,
   passReqToCallback: true
 }));
-
-authRoutes.get("/signup", (req, res, next) => {
-  res.render("auth/signup");
-});
+// TODO: do we need this for login (after wednesday) -mb
+// authRoutes.get("/signup", (req, res, next) => {
+//   res.render("auth/signup");
+// });
 
 authRoutes.post("/signup", (req, res, next) => {
   const username = req.body.username;
