@@ -11,6 +11,7 @@ const path         = require('path');
 const session    = require("express-session");
 const MongoStore = require('connect-mongo')(session);
     
+require('./config/database');
 
 mongoose.Promise = Promise;
 mongoose

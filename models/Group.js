@@ -3,6 +3,10 @@ const Schema = mongoose.Schema;
 
 const groupSchema = new Schema({
     name: { type: String, required: true },
+    admin: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+    },
     users: [{
         type: Schema.Types.ObjectId,
         ref: "User",

@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const statSchema = new Schema({
-       card: {
+    card: {
         type: Schema.Types.ObjectId
-        },
+    },
     user: {
         type: Schema.Types.ObjectId,
         ref: "User"
