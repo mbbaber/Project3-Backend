@@ -7,6 +7,7 @@ const favicon      = require('serve-favicon');
 const mongoose     = require('mongoose');
 const logger       = require('morgan');
 const path         = require('path');
+const cors         = require('cors');
 
 const session    = require("express-session");
 const MongoStore = require('connect-mongo')(session);
@@ -58,10 +59,7 @@ app.use(session({
   store: new MongoStore( { mongooseConnection: mongoose.connection })
 }))
 require('./passport')(app);
-    
 
-const index = require('./routes/index');
-app.use('/', index);
 
 const authRoutes = require('./routes/auth');
 app.use('/auth', authRoutes);
