@@ -2,7 +2,7 @@ const express = require("express");
 const passport = require('passport');
 const authRoutes = express.Router();
 const User = require("../models/User");
-
+const mongoose = require("mongoose");
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
@@ -89,5 +89,26 @@ authRoutes.get("/checklogin", (req, res, next) => {
   }
   res.json({userInfo: req.user })
 });
+
+
+authRoutes.get('/user/:userId', (req, res, next)=>{
+  // if (!mongoose.Types.ObjectId.isValid(req.params.groupId)) {
+  //   next(); // show 404 if bad ObjectId format
+  //   return;
+  // }
+  
+  User.findById(req.params.userId)
+  //.populate("subjects")
+    .then((user) => {
+      if (!user) {
+        next(); // show 404 if no group was found
+        return;
+      }
+      res.json({userInfo: req.user })
+    })
+    .catch((err) => {
+      next(err);
+    });
+})
 
 module.exports = authRoutes;
