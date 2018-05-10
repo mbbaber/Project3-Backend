@@ -33,8 +33,8 @@ myFunction(req, res, next);
 // AUTH signup feature
 
 authRoutes.post("/signup", (req, res, next) => {
-  const username = req.body.username;
-  const password = req.body.password;
+  const { username, password, email}  = req.body;
+  
   console.log(req.body)
 
   const rol = req.body.role;
@@ -53,6 +53,7 @@ authRoutes.post("/signup", (req, res, next) => {
       //res.render("auth/signup", { message: "The username already exists" });
       const err = new Error("The username already exists"); 
       err.status = 400;
+      next(err);
       return;
     }
     const salt = bcrypt.genSaltSync(bcryptSalt);
@@ -61,7 +62,7 @@ authRoutes.post("/signup", (req, res, next) => {
     const newUser = new User({
       username,
       email,
-      encryptedPassword: hashPass,
+      password: hashPass,
     });
 
     newUser.save((err) => {
@@ -81,13 +82,6 @@ authRoutes.get("/logout", (req, res) => {
   req.logout();
   res.json({ userInfo: null });
 });
-
-authRoutes.post("/login", passport.authenticate("local", {
-  successRedirect: "/",
-  failureRedirect: "/auth/login",
-  failureFlash: true,
-  passReqToCallback: true
-}));
 
 authRoutes.get("/checklogin", (req, res, next) => {
   if (req.user) {
