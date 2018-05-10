@@ -44,7 +44,11 @@ app.use(require('node-sass-middleware')({
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
 
-
+// AUTH change cors settings for cookies
+app.use(cors({
+  credentials:true, 
+  origin: ['http://localhost:4200']
+}));
 
 // Enable authentication using session + passport
 app.use(session({
