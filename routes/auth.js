@@ -87,7 +87,7 @@ authRoutes.get("/checklogin", (req, res, next) => {
   if (req.user) {
     req.user.password = undefined
   }
-  res.json({userInfo: req.user })
+  res.json({userInfo: req.user });
 });
 
 
@@ -104,7 +104,7 @@ authRoutes.get('/user/:userId', (req, res, next)=>{
         next(); // show 404 if no group was found
         return;
       }
-      res.json({userInfo: req.user })
+      res.json(user);
     })
     .catch((err) => {
       next(err);
