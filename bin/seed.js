@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+
 const Group = require('../models/Group');
 const Stat = require('../models/Stat');
 const Subject = require('../models/Subject');
@@ -55,7 +57,7 @@ const users = [{
     _id: userIds[1],
     username: "User 1",
     email: "User1@gmail.com",
-    encryptedPassword: "12345",
+    password: "12345",
     groups: [{ _id: groupIds[1] }, { _id: groupIds[2] }, { _id: groupIds[3] }],
     subjects: [{ _id: subjectIds[1] }, { _id: subjectIds[2] }, { _id: subjectIds[3] }, { _id: subjectIds[4] }, { _id: subjectIds[5] }]
 },
@@ -63,7 +65,7 @@ const users = [{
     _id: userIds[2],
     username: "User 2",
     email: "User2@gmail.com",
-    encryptedPassword: "12345",
+    password: "12345",
     groups: [{ _id: groupIds[1] }, { _id: groupIds[2] }, { _id: groupIds[3] }],
     subjects: [{ _id: subjectIds[1] }, { _id: subjectIds[2] }, { _id: subjectIds[3] }, { _id: subjectIds[4] }, { _id: subjectIds[5] }]
 },
@@ -71,7 +73,7 @@ const users = [{
     _id: userIds[3],
     username: "User 3",
     email: "User3@gmail.com",
-    encryptedPassword: "12345",
+    password: "12345",
     groups: [{ _id: groupIds[1] }, { _id: groupIds[2] }, { _id: groupIds[3] }],
     subjects: [{ _id: subjectIds[1] }, { _id: subjectIds[2] }, { _id: subjectIds[3] }, { _id: subjectIds[4] }, { _id: subjectIds[5] }]
 },
@@ -79,7 +81,7 @@ const users = [{
     _id: userIds[4],
     username: "User 4",
     email: "User4@gmail.com",
-    encryptedPassword: "12345",
+    password: "12345",
     groups: [{ _id: groupIds[1] }],
     subjects: [{ _id: subjectIds[1] }, { _id: subjectIds[2] }, { _id: subjectIds[3] }]
 },
@@ -87,7 +89,7 @@ const users = [{
     _id: userIds[5],
     username: "User 5",
     email: "User5@gmail.com",
-    encryptedPassword: "12345",
+    password: "12345",
     groups: [{ _id: groupIds[1] }, { _id: groupIds[2] }, { _id: groupIds[3] }],
     subjects: [{ _id: subjectIds[1] }, { _id: subjectIds[2] }, { _id: subjectIds[3] }, { _id: subjectIds[4] }, { _id: subjectIds[5] }]
 },
@@ -95,11 +97,16 @@ const users = [{
     _id: userIds[6],
     username: "User 6",
     email: "User6@gmail.com",
-    encryptedPassword: "12345",
+    password: "12345",
     groups: [{ _id: groupIds[2] }],
     subjects: [{ _id: subjectIds[1] }, { _id: subjectIds[2] }, { _id: subjectIds[4] }, { _id: subjectIds[6] }]
 }
 ]
+
+users.forEach(user => {
+    const salt = bcrypt.genSaltSync(10);
+    user.password = bcrypt.hashSync(user.password, salt);
+});
 
 const subjects = [{
     _id: subjectIds[1],

@@ -22,7 +22,6 @@ router.get('/api/groups', (req, res, next) => {
   });
 });
 
-
 // GET /api/group/:groupId
 router.get("/group/:groupId", (req, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.groupId)) {
@@ -31,8 +30,6 @@ router.get("/group/:groupId", (req, res, next) => {
   }
 
   // I want to display all the subjects WITHIN the clicked group
-  
-
   Group.findById(req.params.groupId)
   .populate("subjects")
     .then((group) => {
@@ -46,5 +43,28 @@ router.get("/group/:groupId", (req, res, next) => {
       next(err);
     });
 });
+
+// GET /subject/:subjectId
+router.get("/subject/:subjectId", (req, res, next) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.subjectId)) {
+    next(); // show 404 if bad ObjectId format
+    return;
+  }
+
+  // I want to display all the card from and back WITHIN the subject
+  Subject.findById(req.params.subjectId)
+  .populate("cards")
+    .then((subject) => {
+      if (!subject) {
+        next(); // show 404 if no group was found
+        return;
+      }
+      res.json(subject);
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+
 
 module.exports = router;
