@@ -7,6 +7,7 @@ const favicon      = require('serve-favicon');
 const mongoose     = require('mongoose');
 const logger       = require('morgan');
 const path         = require('path');
+const cors         = require('cors');
 
 const session    = require("express-session");
 const MongoStore = require('connect-mongo')(session);
@@ -15,7 +16,7 @@ require('./config/database');
 
 mongoose.Promise = Promise;
 mongoose
-  .connect('mongodb://localhost/back-end', {useMongoClient: true})
+  .connect('mongodb://localhost/project3', {useMongoClient: true})
   .then(() => {
     console.log('Connected to Mongo!')
   }).catch(err => {
