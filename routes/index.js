@@ -23,7 +23,7 @@ router.get('/api/groups', (req, res, next) => {
     });
 });
 
-// GET /api/group/:groupId
+// GET /group/:groupId
 router.get("/group/:groupId", (req, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.groupId)) {
     next(); // show 404 if bad ObjectId format
@@ -45,7 +45,7 @@ router.get("/group/:groupId", (req, res, next) => {
     });
 });
 
-// GET /subject/:subjectId
+// GET 
 router.get("/subject/:subjectId", (req, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.subjectId)) {
     next(); // show 404 if bad ObjectId format
@@ -73,18 +73,19 @@ router.patch("/stat", (req, res, next) => {
   //   next(); // show 404 if bad ObjectId format
   //   return;
 const { card, group, subject, rating } = req.body;
+console.log(req.user);
   Stat.findOneAndUpdate( 
     {user: req.user,
       //"5af4551e2c4927aa694c05d9"
     card: card,
     //"5af4551e2c4927aa694c05f4",
-    group: group,
+    group: group, //TODO: REFRESH SESSION ISSUE
     //"5af4551e2c4927aa694c05d5",
     subject: subject
     //"5af4551e2c4927aa694c05e0"
   },
     {
-      $set: { rating: rating },
+      $set: { rating: rating }, //TODO: WTF does this not take a varible!?!?!?
       $inc: { seen: 1 }
     }, 
     {upsert: true, new: true},
