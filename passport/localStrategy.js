@@ -14,7 +14,7 @@ passport.use(new LocalStrategy((username, password, next) => {
       next(null, false, { message: 'Incorrect username' });
       return;
     }
-console.log({ submitPass: password, userPass: foundUser.password})
+
     if (!bcrypt.compareSync(password, foundUser.password)) {
       next(null, false, { message: 'Incorrect password' });
       return;

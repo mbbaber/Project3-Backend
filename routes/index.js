@@ -72,25 +72,31 @@ router.patch("/stat", (req, res, next) => {
   // if (!mongoose.Types.ObjectId.isValid(req.params.statId)) {
   //   next(); // show 404 if bad ObjectId format
   //   return;
-//const { card, user, group, subject, rating, seen } = req.body;
+const { card, group, subject, rating } = req.body;
   Stat.findOneAndUpdate( 
-    {user: "5af4551e2c4927aa694c05d9"
-    // card: currentCard,
-    // group: currentGroup,
-    // subject: currentSubject
+    {user: req.user,
+      //"5af4551e2c4927aa694c05d9"
+    card: card,
+    //"5af4551e2c4927aa694c05f4",
+    group: group,
+    //"5af4551e2c4927aa694c05d5",
+    subject: subject
+    //"5af4551e2c4927aa694c05e0"
   },
     {
-      rating: 999999,
-      seen: 77777,
+      $set: { rating: rating },
+      $inc: { seen: 1 }
     }, 
-    {upsert: true}
+    {upsert: true, new: true},
  )
  .then((result) => {
     console.log(result)
+    res.json(result)
  })
  .catch((err) => {
    console.log("Stat error")
    console.log(err);
+   next(err);
  })
 });
 
