@@ -66,5 +66,11 @@ app.use('/auth', authRoutes);
 
 const indexRoutes = require('./routes/index');
 app.use('/', indexRoutes);
+
+const groupRoutes = require('./routes/group');
+app.use('/api', groupRoutes);
+
+const subRoutes = require('./routes/subjects');
+app.use('/subject', subRoutes);
       
 module.exports = app;

@@ -14,40 +14,7 @@ const User = require('../models/User');
 
 //first have to do database query
 //and then respond with json.
-router.get('/api/groups', (req, res, next) => {
-  Group.find()
-    .then((groups) => {
-      res.json(groups);
-    })
-    .catch((err) => {
-      next(err);
-    });
-});
 
-router.get('/api/user-groups/:userId', (req, res, next)=>{
-  User.findById(req.params.userId)
-  .populate('groups')
-  .then((result)=>{
-    res.json(result.groups);
-  })
-  .catch((err)=>{
-    next(err);
-  })
-})
- 
-router.put('/api/groups-of-the-user/:userId/gr/:groupId', (req, res, next)=>{
-  User.findByIdAndUpdate(
-    req.params.userId,
-    {$pull: {groups: req.params.groupId}})
-    .populate('groups')
-  .then((result)=>{
-    console.log(result.groups)
-    res.json(result.groups);
-  })
-  .catch((err)=>{
-    next('error deleting groups',err);
-  })
-})
 
 // GET /group/:groupId
 router.get("/group/:groupId", (req, res, next) => {
@@ -71,28 +38,6 @@ router.get("/group/:groupId", (req, res, next) => {
     });
 });
 
-// GET 
-router.get("/subject/:subjectId", (req, res, next) => {
-  if (!mongoose.Types.ObjectId.isValid(req.params.subjectId)) {
-    next(); // show 404 if bad ObjectId format
-    return;
-  }
-
-  // I want to display all the card from and back WITHIN the subject
-  Subject.findById(req.params.subjectId)
-    .populate("cards")
-    .then((subject) => {
-      if (!subject) {
-        next(); // show 404 if no group was found
-        return;
-      }
-      res.json(subject);
-    })
-    .catch((err) => {
-      next(err);
-    });
-
-});
 
 router.patch("/stat", (req, res, next) => {
   // if (!mongoose.Types.ObjectId.isValid(req.params.statId)) {
