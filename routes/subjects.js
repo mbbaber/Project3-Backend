@@ -53,6 +53,52 @@ router.get("/:subjectId", (req, res, next) => {
         next(err);
       });
   
+});
+
+router.post('/new-subject', (req, res, next)=>{
+  const newSub = new Subject({
+    name: req.body.name,
+    admin: req.user
   });
+  let newSubId = "";
+  newSub.save(err => {
+    if (err) {
+      next("error savving new sub",err);
+    } else {
+      res.json(newSub);
+      newSubId = newSub._id;
+      console.log('this new sub ************',newSubId);
+      // console.log(req.user);
+      User.findByIdAndUpdate(req.user, { $push: { subjects: newSubId } }, {new: true})
+        .then(result => {
+          console.log(result);
+          // res.json(result);
+        })
+        .catch(err => {
+          next("error updating user",err);
+        });
+    }
+  });
+})
+
+router.get('/all-subjects', (req, res, next)=>{
+  Subject.find()
+  .then(result=>{
+    res.json(result);
+  })
+  .catch((err)=>{
+    next(err);
+  })
+})
+
+router.get('/:subId', (req, res, next)=>{
+  Subject.findById(req.params.subId)
+  .then((result)=>{
+    res.json(result);
+  })
+  .catch((err)=>{
+    next(err);
+  })
+})
 
 module.exports = router;

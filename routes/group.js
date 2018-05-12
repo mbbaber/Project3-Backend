@@ -58,6 +58,7 @@ router.post("/new-group", (req, res, next) => {
       console.log(req.user);
       User.findByIdAndUpdate(req.user, { $push: { groups: newGroupId } })
         .then(result => {
+        //   res.json(result);
           console.log(result);
         })
         .catch(err => {
