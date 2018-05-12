@@ -5,6 +5,7 @@ const router = express.Router();
 const Group = require("../models/Group");
 const Subject = require("../models/Subject");
 const Stat = require("../models/Stat");
+const User = require('../models/User');
 
 // /* GET home page */
 // router.get('/', (req, res, next) => {
@@ -22,6 +23,31 @@ router.get('/api/groups', (req, res, next) => {
       next(err);
     });
 });
+
+router.get('/api/user-groups/:userId', (req, res, next)=>{
+  User.findById(req.params.userId)
+  .populate('groups')
+  .then((result)=>{
+    res.json(result.groups);
+  })
+  .catch((err)=>{
+    next(err);
+  })
+})
+ 
+router.put('/api/groups-of-the-user/:userId/gr/:groupId', (req, res, next)=>{
+  User.findByIdAndUpdate(
+    req.params.userId,
+    {$pull: {groups: req.params.groupId}})
+    .populate('groups')
+  .then((result)=>{
+    console.log(result.groups)
+    res.json(result.groups);
+  })
+  .catch((err)=>{
+    next('error deleting groups',err);
+  })
+})
 
 // GET /group/:groupId
 router.get("/group/:groupId", (req, res, next) => {
