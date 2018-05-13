@@ -33,28 +33,6 @@ router.put('/subs-of-the-user/:userId/gr/:subId',(req, res, next)=>{
       })
 })
 
-router.get("/:subjectId", (req, res, next) => {
-    if (!mongoose.Types.ObjectId.isValid(req.params.subjectId)) {
-      next(); // show 404 if bad ObjectId format
-      return;
-    }
-  
-    // I want to display all the card from and back WITHIN the subject
-    Subject.findById(req.params.subjectId)
-      .populate("cards")
-      .then((subject) => {
-        if (!subject) {
-          next(); // show 404 if no group was found
-          return;
-        }
-        res.json(subject);
-      })
-      .catch((err) => {
-        next(err);
-      });
-  
-});
-
 router.post('/new-subject', (req, res, next)=>{
   const newSub = new Subject({
     name: req.body.name,
@@ -91,6 +69,76 @@ router.get('/all-subjects', (req, res, next)=>{
   })
 })
 
+
+router.put('/add-card/:subId',(req, res, next)=>{
+ const {front, back} = req.body;
+  Subject.findByIdAndUpdate(req.params.subId,
+    {$push: {cards: { front: front, back: back }}},
+    {new:true}
+  )
+  .populate('cards')
+  .then((result)=>{
+    console.log(result)
+    res.json(result)
+  })
+  .catch((err)=>{
+    next(err);
+  })
+})
+
+// router.get('/:subId/card/:cardId', (req, res, next)=>{
+//   console.log(req.params.cardId)
+//   Subject.findByIdAndUpdate( 
+//     req.params.subId,
+//     {$pull: { cards: req.params.cardId }},
+//     {new: true})
+//   .populate('cards')
+//   .then((result)=>{
+//     console.log(result)
+//     res.json(result.cards)
+//   })
+//   .catch((err)=>{
+//     next(err);
+//   })
+// })
+
+router.put("/sub/:subId/card/:cardId", (req, res, next) => {
+  Subject.findByIdAndUpdate(req.params.subId, 
+    {$pull: { cards: {_id: req.params.cardId} }},
+    {new:true})
+    // .populate("cards")
+    .then(result => {
+      console.log('deleted the card',result);
+      res.json(result);
+    })
+    .catch(err => {
+      next("error deleting cards");
+      next(err);
+    });
+});
+
+// router.get("/:subjectId", (req, res, next) => {
+//   if (!mongoose.Types.ObjectId.isValid(req.params.subjectId)) {
+//     next(); // show 404 if bad ObjectId format
+//     return;
+//   }
+
+//   // I want to display all the card from and back WITHIN the subject
+//   Subject.findById(req.params.subjectId)
+//     .populate("cards")
+//     .then((subject) => {
+//       if (!subject) {
+//         next(); // show 404 if no group was found
+//         return;
+//       }
+//       res.json(subject);
+//     })
+//     .catch((err) => {
+//       next(err);
+//     });
+
+// });
+
 router.get('/:subId', (req, res, next)=>{
   Subject.findById(req.params.subId)
   .then((result)=>{
@@ -99,6 +147,6 @@ router.get('/:subId', (req, res, next)=>{
   .catch((err)=>{
     next(err);
   })
-})
+})  //same route as above 
 
 module.exports = router;

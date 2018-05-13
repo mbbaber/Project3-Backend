@@ -31,9 +31,8 @@ router.get("/user-groups/:userId", (req, res, next) => {
 });
 
 router.put("/groups-of-the-user/:userId/gr/:groupId", (req, res, next) => {
-  User.findByIdAndUpdate(req.params.userId, {
-    $pull: { groups: req.params.groupId }
-  })
+  User.findByIdAndUpdate(req.params.userId, 
+    {$pull: { groups: req.params.groupId }})
     .populate("groups")
     .then(result => {
       console.log(result.groups);
@@ -79,5 +78,18 @@ router.get("/new-group/:groupId", (req, res, next) => {
       next(err);
     });
 });
+
+router.put("/gr/:groupId/sb/:subId",(req, res, next)=>{
+  Group.findByIdAndUpdate(req.params.groupId,
+  {$push: {subjects: req.params.subId }},
+  {new: true})
+  .populate('groups')
+  .then(result => {
+    res.json(result);
+  })
+  .catch(err => {
+    next(err);
+  });
+})
 
 module.exports = router;
