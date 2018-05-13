@@ -5,15 +5,11 @@ const router = express.Router();
 const Group = require("../models/Group");
 const Subject = require("../models/Subject");
 const Stat = require("../models/Stat");
-const User = require('../models/User');
 
 // /* GET home page */
 // router.get('/', (req, res, next) => {
 //   res.render('index');
 // });
-
-//first have to do database query
-//and then respond with json.
 
 
 // GET /group/:groupId
@@ -38,13 +34,39 @@ router.get("/group/:groupId", (req, res, next) => {
     });
 });
 
+// GET 
+router.get("/subject/:subjectId", (req, res, next) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.subjectId)) {
+    next(); // show 404 if bad ObjectId format
+    return;
+  }
+
+  // I want to display all the card from and back WITHIN the subject
+  Subject.findById(req.params.subjectId)
+    .populate("cards")
+    .then((subject) => {
+      if (!subject) {
+        next(); // show 404 if no group was found
+        return;
+      }
+      res.json(subject);
+    })
+    .catch((err) => {
+      next(err);
+    });
+
+});
 
 
 //API to get the stat for 1 card for the signed in user
 router.get("/stat/card/:cardId", (req, res, next) => {
+  var filter = { card: req.params.cardId }
+  if (req.user) { //if authenticated call
+    filter.user = req.user
+  }
+
   Stat.find(
-    { user: req.user, 
-      card: req.params.cardId}
+    filter
   )
   .then((result) => {
     res.json(result)

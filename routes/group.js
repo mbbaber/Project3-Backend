@@ -7,6 +7,8 @@ const Subject = require("../models/Subject");
 const Stat = require("../models/Stat");
 const User = require("../models/User");
 
+//first have to do database query
+//and then respond with json.
 router.get("/groups", (req, res, next) => {
   Group.find()
     .then(groups => {
