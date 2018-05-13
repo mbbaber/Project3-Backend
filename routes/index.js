@@ -39,6 +39,37 @@ router.get("/group/:groupId", (req, res, next) => {
 });
 
 
+
+//API to get the stat for 1 card for the signed in user
+router.get("/stat/card/:cardId", (req, res, next) => {
+  Stat.find(
+    { user: req.user, 
+      card: req.params.cardId}
+  )
+  .then((result) => {
+    res.json(result)
+  }) 
+  .catch(next)
+})
+
+
+//API to get all the stats for a subject for the signed in user
+router.get("/stat/subject/:subjectId", (req, res, next) => {
+  var filter = { subject: req.params.subjectId }
+  
+  if (req.user) { //if authenticated call
+    filter.user = req.user
+  }
+
+  Stat.find(
+    filter
+  )
+  .then((result) => {
+    res.json(result)
+  }) 
+  .catch(next)
+})
+
 router.patch("/stat", (req, res, next) => {
   // if (!mongoose.Types.ObjectId.isValid(req.params.statId)) {
   //   next(); // show 404 if bad ObjectId format
@@ -50,13 +81,13 @@ console.log(req.user);
       //"5af4551e2c4927aa694c05d9"
     card: card,
     //"5af4551e2c4927aa694c05f4",
-    group: group, //TODO: REFRESH SESSION ISSUE
+    group: group, 
     //"5af4551e2c4927aa694c05d5",
     subject: subject
     //"5af4551e2c4927aa694c05e0"
   },
     {
-      $set: { rating: rating }, //TODO: WTF does this not take a varible!?!?!?
+      $set: { rating: rating }, 
       $inc: { seen: 1 }
     }, 
     {upsert: true, new: true},
