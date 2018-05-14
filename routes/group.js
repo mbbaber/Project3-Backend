@@ -91,47 +91,65 @@ router.put("/gr/:groupId/sb/:subId",(req, res, next)=>{
   });
 })
 
-router.put('/us/:userId/gr/:groupId', (req, res, next)=>{
-  Group.findByIdAndUpdate(req.params.groupId,
-  {$push: {users: req.params.userId }},
-  {new: true})
-  .then((result)=>{
-    User.findByIdAndUpdate(req.params.userId, 
-    {$push: {groups: req.params.groupId}},
-    {new:true})
-    .then(()=>{
-      res.json(result.users);
+router.put("/us/:userId/gr/:groupId", (req, res, next) => {
+  Group.findByIdAndUpdate(
+    req.params.groupId,
+    { $addToSet: { users: req.params.userId } },
+    { new: true }
+  )
+    .then(result => {
+      User.findByIdAndUpdate(
+        req.params.userId,
+        { $addToSet: { groups: req.params.groupId } },
+        { new: true }
+      )
+        .then(() => {
+          result.subjects.forEach(oneSub => {
+            User.findByIdAndUpdate(
+              req.params.userId,
+              { $addToSet: { subjects: oneSub } },
+              { new: true }
+            )
+              .then(() => {
+                res.json(result.users);
+              })
+              .catch(err => {
+                next(err);
+              });
+          });
+        })
+        .catch(err => {
+          next(err);
+        });
+      console.log("adding this user", req.params.userId);
     })
-    .catch((err)=>{
+    .catch(err => {
       next(err);
-    })
-    console.log('adding this user', req.params.userId)
-  })
-  .catch((err)=>{
-    next(err);
-  })
-})
+    });
+});
 
 router.put("/delete/user/:userId/group/:groupId", (req, res, next) => {
   Group.findByIdAndUpdate(
     req.params.groupId,
-    { $unset: { users: req.params.userId } },
+    { $pull: { users: req.params.userId } },
     { new: true }
-  )
-  .then((result)=>{
-    User.findByIdAndUpdate(req.params.userId,
-    {$unset: {groups: req.params.groupId}},
-  {new: true})
-  .then(()=>{
-      res.json(result.users);
+    )
+    .then(result => {
+      User.findByIdAndUpdate(
+        req.params.userId,
+        { $pull: { groups: req.params.groupId } },
+        { new: true }
+        )
+        .then(() => {
+          res.json(result.users);
+        })
+        .catch(err => {
+          next(err);
+        });
     })
-    .catch((err)=>{
+    .catch(err => {
       next(err);
-    })
-  })
-  .catch((err)=>{
-    next(err);
-  })
+    });
 });
 
 module.exports = router;
