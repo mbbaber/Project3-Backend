@@ -110,4 +110,31 @@ authRoutes.get("/user/:userId", (req, res, next) => {
     });
 });
 
+authRoutes.get('/all-users-who-belong/:groupId', (req, res, next)=>{
+  User.find( {groups: req.params.groupId })
+  .then((result)=>{
+    result.forEach((one)=>{
+      one.password = undefined;
+    })
+    res.json(result);
+  })
+  .catch((err)=>{
+    next(err)
+  })
+})
+
+authRoutes.get('/all-users-who-dont-belong/:groupId', (req, res, next)=>{
+  User.find( {groups: {$nin: [req.params.groupId] } })
+  .then((result)=>{
+    result.forEach((one)=>{
+      one.password = undefined;
+    })
+    res.json(result);
+  })
+  .catch((err)=>{
+    next(err)
+  })
+
+})
+
 module.exports = authRoutes;

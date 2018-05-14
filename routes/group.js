@@ -46,7 +46,8 @@ router.put("/groups-of-the-user/:userId/gr/:groupId", (req, res, next) => {
 router.post("/new-group", (req, res, next) => {
   const newGroup = new Group({
     name: req.body.name,
-    admin: req.user
+    admin: req.user,
+    users: [req.user._id]
   });
   let newGroupId = "";
   newGroup.save(err => {
@@ -55,13 +56,11 @@ router.post("/new-group", (req, res, next) => {
     } else {
       res.json(newGroup);
       newGroupId = newGroup._id;
-      console.log(newGroupId);
-      console.log(req.user);
       User.findByIdAndUpdate(req.user, { $push: { groups: newGroupId } })
-        .then(result => {
-        //   res.json(result);
-          console.log(result);
-        })
+        // .then(result => {
+        //   // res.json(result);
+        //   // console.log(result);
+        // })
         .catch(err => {
           next(err);
         });
@@ -91,5 +90,48 @@ router.put("/gr/:groupId/sb/:subId",(req, res, next)=>{
     next(err);
   });
 })
+
+router.put('/us/:userId/gr/:groupId', (req, res, next)=>{
+  Group.findByIdAndUpdate(req.params.groupId,
+  {$push: {users: req.params.userId }},
+  {new: true})
+  .then((result)=>{
+    User.findByIdAndUpdate(req.params.userId, 
+    {$push: {groups: req.params.groupId}},
+    {new:true})
+    .then(()=>{
+      res.json(result.users);
+    })
+    .catch((err)=>{
+      next(err);
+    })
+    console.log('adding this user', req.params.userId)
+  })
+  .catch((err)=>{
+    next(err);
+  })
+})
+
+router.put("/delete/user/:userId/group/:groupId", (req, res, next) => {
+  Group.findByIdAndUpdate(
+    req.params.groupId,
+    { $unset: { users: req.params.userId } },
+    { new: true }
+  )
+  .then((result)=>{
+    User.findByIdAndUpdate(req.params.userId,
+    {$unset: {groups: req.params.groupId}},
+  {new: true})
+  .then(()=>{
+      res.json(result.users);
+    })
+    .catch((err)=>{
+      next(err);
+    })
+  })
+  .catch((err)=>{
+    next(err);
+  })
+});
 
 module.exports = router;
