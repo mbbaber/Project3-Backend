@@ -92,6 +92,23 @@ router.get("/stat/subject/:subjectId", (req, res, next) => {
   .catch(next)
 })
 
+//API to get all the stats for a subject by userId
+router.get("/stat/subject/:subjectId/:userId", (req, res, next) => {
+  var filter = { subject: req.params.subjectId }
+  
+  
+  filter.user = req.params.userId
+  
+
+  Stat.find(
+    filter
+  )
+  .then((result) => {
+    res.json(result)
+  }) 
+  .catch(next)
+})
+
 
 //API to get all the stats for a subject for all the users in a group
 
