@@ -92,6 +92,19 @@ router.get("/stat/subject/:subjectId", (req, res, next) => {
   .catch(next)
 })
 
+
+//API to get all the stats for a subject for all the users in a group
+
+router.get("/group-info/:groupId", (req, res, next) => {
+  Group.findById(req.params.groupId)
+  .populate("users", "subjects")
+  .then((result) => {
+    res.json(result)
+  }) 
+  .catch(next)
+})
+
+
 router.patch("/stat", (req, res, next) => {
   // if (!mongoose.Types.ObjectId.isValid(req.params.statId)) {
   //   next(); // show 404 if bad ObjectId format
