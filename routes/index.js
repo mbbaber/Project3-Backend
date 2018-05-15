@@ -21,7 +21,7 @@ router.get("/group/:groupId", (req, res, next) => {
 
   // I want to display all the subjects WITHIN the clicked group
   Group.findById(req.params.groupId)
-    .populate("subjects")
+    .populate(["users", "subjects"])
     .then((group) => {
       if (!group) {
         next(); // show 404 if no group was found
@@ -112,14 +112,14 @@ router.get("/stat/subject/:subjectId/:userId", (req, res, next) => {
 
 //API to get all the stats for a subject for all the users in a group
 
-router.get("/group-info/:groupId", (req, res, next) => {
-  Group.findById(req.params.groupId)
-  .populate("users", "subjects")
-  .then((result) => {
-    res.json(result)
-  }) 
-  .catch(next)
-})
+// router.get("/group-info/:groupId", (req, res, next) => {
+//   Group.findById(req.params.groupId)
+//     .populate("users", "subjects")
+//     .then((result) => {
+//       res.json(result)
+//     }) 
+//     .catch(next)
+// })
 
 
 router.patch("/stat", (req, res, next) => {
