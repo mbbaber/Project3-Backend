@@ -68,6 +68,31 @@ router.post("/new-group", (req, res, next) => {
   });
 });
 
+router.post("/private-group/:userId", (req, res, next)=>{
+  const newGroup = new Group({
+    name: "Private",
+    admin: req.params.userId,
+    users: [req.params.userId]
+  });
+  let newGroupId = "";
+  newGroup.save(err => {
+    if (err) {
+      next(err);
+    } else {
+      res.json(newGroup);
+      newGroupId = newGroup._id;
+      User.findByIdAndUpdate(req.params.userId, { $push: { groups: newGroupId } })
+        // .then(result => {
+        //   // res.json(result);
+        //   // console.log(result);
+        // })
+        .catch(err => {
+          next(err);
+        });
+    }
+  });
+})
+
 router.get("/new-group/:groupId", (req, res, next) => {
   Group.findById(req.params.groupId)
     .then(result => {
@@ -98,27 +123,23 @@ router.put("/gr/:groupId/sb/:subId",(req, res, next)=>{
 })
 
 router.put("/us/:userId/gr/:groupId", (req, res, next) => {
-  Group.findByIdAndUpdate(
-    req.params.groupId,
-    { $addToSet: { users: req.params.userId } }
-  )
+  Group.findByIdAndUpdate(req.params.groupId, {
+    $addToSet: { users: req.params.userId }
+  })
     .then(result => {
-      User.findByIdAndUpdate(
-        req.params.userId,
-        { $addToSet: { groups: req.params.groupId } }
-      )
-        .then(() => {
-          result.subjects.forEach(oneSub => {
-            User.findByIdAndUpdate(
-              req.params.userId,
-              { $addToSet: { subjects: oneSub } },
-              { new: true }
-            )
-              .then(() => {
-                res.json(result.users);
-              })
+      User.findByIdAndUpdate(req.params.userId, {
+        $addToSet: { groups: req.params.groupId }
+      }).then(() => {
+        result.subjects.forEach(oneSub => {
+          User.findByIdAndUpdate(
+            req.params.userId,
+            { $addToSet: { subjects: oneSub } },
+            { new: true }
+          ).then(() => {
+            res.json(result.users);
           });
-        })
+        });
+      });
       console.log("adding this user", req.params.userId);
     })
     .catch(err => {
@@ -127,25 +148,63 @@ router.put("/us/:userId/gr/:groupId", (req, res, next) => {
 });
 
 router.put("/delete/user/:userId/group/:groupId", (req, res, next) => {
-  Group.findByIdAndUpdate(
-    req.params.groupId,
-    { $pull: { users: req.params.userId } }
-    )
+var userSubs = [];
+var groupSubs = [];
+  Group.findByIdAndUpdate(req.params.groupId, {
+    $pull: { users: req.params.userId }
+  })
     .then(group => {
-      User.findByIdAndUpdate(
-        req.params.userId,
-        { $pull: { groups: req.params.groupId } }
-        )
-        .then((user) => {
-          group.subjects.forEach((oneSubId)=>{
-            User.findByIdAndUpdate(req.params.userId,
-            {$pull: {subjects: oneSubId }},
-            {new: true})
-            .then(()=>{
-              res.json(group.users);
-            })
-          })
-        })
+      User.findByIdAndUpdate(req.params.userId, {
+        $pull: { groups: req.params.groupId }
+      })
+        .populate("groups")
+        .then(user => {
+          res.json(group.users);
+        });
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
+router.put("/delete/subs/:groupId/user/:userId", (req, res, next) => {
+  Group.findById(req.params.groupId)
+    // .populate('subjects')
+    .then(group => {
+      User.findById(req.params.userId)
+        .populate({ path: "groups", populate: { path: "subjects" } })
+        .then(user => {
+          var arrGrSb = [];
+          user.groups.forEach(oneGr => {
+            oneGr.subjects.forEach((sub, i) => {
+              arrGrSb.push(sub._id);
+            });
+          });
+          var toCheck = [];
+          group.subjects.forEach(one => {
+            toCheck.push(one);
+          });
+          // console.log(toCheck);
+          // // console.log(group.subjects)
+          // console.log(arrGrSb);
+          arrGrSb.forEach(one => {
+            toCheck.forEach((two, i) => {
+              if (one.equals(two)) {
+                toCheck.splice(i, 1);
+              }
+            });
+          });
+
+          toCheck.forEach(oneId => {
+            User.findByIdAndUpdate(
+              req.params.userId,
+              { $pull: { subjects: oneId } },
+              { new: true }
+            ).then(res => {
+              res.json;
+            });
+          });
+        });
     })
     .catch(err => {
       next(err);

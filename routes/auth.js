@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
+const Group = require('../models/Group')
 
 // AUTH - edit login feature
 
