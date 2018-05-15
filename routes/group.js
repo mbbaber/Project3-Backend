@@ -94,14 +94,12 @@ router.put("/gr/:groupId/sb/:subId",(req, res, next)=>{
 router.put("/us/:userId/gr/:groupId", (req, res, next) => {
   Group.findByIdAndUpdate(
     req.params.groupId,
-    { $addToSet: { users: req.params.userId } },
-    { new: true }
+    { $addToSet: { users: req.params.userId } }
   )
     .then(result => {
       User.findByIdAndUpdate(
         req.params.userId,
-        { $addToSet: { groups: req.params.groupId } },
-        { new: true }
+        { $addToSet: { groups: req.params.groupId } }
       )
         .then(() => {
           result.subjects.forEach(oneSub => {
@@ -113,14 +111,9 @@ router.put("/us/:userId/gr/:groupId", (req, res, next) => {
               .then(() => {
                 res.json(result.users);
               })
-              .catch(err => {
-                next(err);
-              });
           });
         })
-        .catch(err => {
-          next(err);
-        });
+       
       console.log("adding this user", req.params.userId);
     })
     .catch(err => {
@@ -131,21 +124,26 @@ router.put("/us/:userId/gr/:groupId", (req, res, next) => {
 router.put("/delete/user/:userId/group/:groupId", (req, res, next) => {
   Group.findByIdAndUpdate(
     req.params.groupId,
-    { $pull: { users: req.params.userId } },
-    { new: true }
+    { $pull: { users: req.params.userId } }
     )
-    .then(result => {
+    .then(group => {
       User.findByIdAndUpdate(
         req.params.userId,
-        { $pull: { groups: req.params.groupId } },
-        { new: true }
+        { $pull: { groups: req.params.groupId } }
         )
-        .then(() => {
-          res.json(result.users);
+        .then((user) => {
+          group.subjects.forEach((oneSubId)=>{
+            User.findByIdAndUpdate(req.params.userId,
+            {$pull: {subjects: oneSubId }},
+            {new: true})
+            .then(()=>{
+              res.json(group.users);
+            })
+
+          })
+          
         })
-        .catch(err => {
-          next(err);
-        });
+
     })
     .catch(err => {
       next(err);
