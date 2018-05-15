@@ -80,11 +80,17 @@ router.get("/new-group/:groupId", (req, res, next) => {
 
 router.put("/gr/:groupId/sb/:subId",(req, res, next)=>{
   Group.findByIdAndUpdate(req.params.groupId,
-  {$push: {subjects: req.params.subId }},
-  {new: true})
+  {$push: {subjects: req.params.subId }})
   .populate('groups')
   .then(result => {
-    res.json(result);
+    result.users.forEach((oneUserId)=>{
+      User.findByIdAndUpdate(oneUserId,
+        {$addToSet: { subjects: req.params.subId}}, 
+        {new: true})
+        .then(()=>{
+          res.json(result);
+        })
+    })
   })
   .catch(err => {
     next(err);
@@ -113,7 +119,6 @@ router.put("/us/:userId/gr/:groupId", (req, res, next) => {
               })
           });
         })
-       
       console.log("adding this user", req.params.userId);
     })
     .catch(err => {
@@ -139,11 +144,8 @@ router.put("/delete/user/:userId/group/:groupId", (req, res, next) => {
             .then(()=>{
               res.json(group.users);
             })
-
           })
-          
         })
-
     })
     .catch(err => {
       next(err);
