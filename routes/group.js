@@ -129,7 +129,8 @@ router.put("/us/:userId/gr/:groupId", (req, res, next) => {
     .then(result => {
       User.findByIdAndUpdate(req.params.userId, {
         $addToSet: { groups: req.params.groupId }
-      }).then(() => {
+      })
+      .then(() => {
         result.subjects.forEach(oneSub => {
           User.findByIdAndUpdate(
             req.params.userId,
@@ -184,9 +185,6 @@ router.put("/delete/subs/:groupId/user/:userId", (req, res, next) => {
           group.subjects.forEach(one => {
             toCheck.push(one);
           });
-          // console.log(toCheck);
-          // // console.log(group.subjects)
-          // console.log(arrGrSb);
           arrGrSb.forEach(one => {
             toCheck.forEach((two, i) => {
               if (one.equals(two)) {
