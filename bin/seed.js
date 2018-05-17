@@ -23,7 +23,7 @@ function generateIds(n){
 const groupIds = generateIds(3),
     userIds = generateIds(6),
     subjectIds = generateIds(6),
-    statIds = generateIds(5);
+    statIds = generateIds(23*6);
 
 // 5 cards per suject   
 cardIds = [];
