@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
+const nodemailer = require('nodemailer');
 
 const Group = require("../models/Group");
 const Subject = require("../models/Subject");
@@ -208,5 +209,40 @@ router.put("/delete/subs/:groupId/user/:userId", (req, res, next) => {
       next(err);
     });
 });
+
+
+const transport = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user: process.env.gmail_user,
+    pass: process.env.gmail_pass
+  }
+})
+
+router.post('/process-message', (req, res, next)=>{
+  const {sender, senderEmail, message, email } = req.body;
+    
+    transport.sendMail({
+      from: "Your Website <website@example.com>",
+      to: email,
+      subject: `Your study buddy found you!`, 
+      text: `
+      Name: ${sender}
+      Email: ${senderEmail}
+      Message: ${message}`,
+      html: `
+      <h1>Great news!</h1>
+      <h2> ${sender} found you as his study-budy!</h2>
+      <p>Here's what they wrote:<br> ${message}</p>`
+    })
+    .then((result)=>{
+      res.json(result)
+    })
+    .catch((err)=>{
+      next(err);
+    })
+  });
+
+
 
 module.exports = router;

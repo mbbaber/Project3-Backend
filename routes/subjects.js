@@ -149,4 +149,31 @@ router.get('/:subId', (req, res, next)=>{
   })
 })  //same route as above 
 
+
+router.put('/add-keyword/:subId/:word', (req, res, next)=>{
+
+  Subject.findByIdAndUpdate(req.params.subId,
+  {$addToSet: {keywords: req.params.word}},
+  {new: true})
+  .then((result)=>{
+    res.json(result.keywords)
+  })
+  .catch((err)=>{
+    next(err);
+  })
+})
+
+router.put('/delete-keyword/:subId/:word', (req, res, next)=>{
+
+  Subject.findByIdAndUpdate(req.params.subId,
+  {$pull: {keywords: req.params.word}},
+  {new: true})
+  .then((result)=>{
+    res.json(result.keywords)
+  })
+  .catch((err)=>{
+    next(err);
+  })
+})
+
 module.exports = router;
