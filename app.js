@@ -16,7 +16,7 @@ require('./config/database');
 
 mongoose.Promise = Promise;
 mongoose
-  .connect('mongodb://localhost/project3', {useMongoClient: true})
+  .connect(process.env.MONGODB_URI, {useMongoClient: true})
   .then(() => {
     console.log('Connected to Mongo!')
   }).catch(err => {
@@ -74,3 +74,10 @@ const subRoutes = require('./routes/subjects');
 app.use('/subject', subRoutes);
       
 module.exports = app;
+
+// PRODUCTION
+// Add middleware at the very end
+// send Angular's HTML for all other routes
+ app.use((req, res, next) => {
+   res.sendFile(__dirname + '/public/index.html');
+ });
