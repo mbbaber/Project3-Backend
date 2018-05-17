@@ -23,9 +23,9 @@ function generateIds(n){
 const groupIds = generateIds(3),
     userIds = generateIds(6),
     subjectIds = generateIds(6),
-    statIds = generateIds(23*6);
+    statIds = generateIds(138);
 
-// 5 cards per suject   
+// 5 cards per subject   
 cardIds = [];
 for(var i = 0; i <= 6; i++){
     cardIds.push(generateIds(5))
@@ -45,7 +45,6 @@ const groups = [{
     users: [{ _id: userIds[2] }, { _id: userIds[3] }, { _id: userIds[4] }, { _id: userIds[5] }, { _id: userIds[6] } ],
     subjects: [{ _id: subjectIds[1] }, { _id: subjectIds[4] }]
 },
-
 {
     _id: groupIds[3],
     name: "Ironhack Team 3",
@@ -150,6 +149,7 @@ const subjects = [{
     { _id: cardIds[4][2], front: "What is a runtime environment?", back: "an environment which includes all of the tools and features needed to run a specific program, or in the case of Node.js, a programming language." }, 
     { _id: cardIds[4][3], front: "Why use Node.js?", back: "Because Node uses JavaScript’s event driven and asynchronous model, it excels with live updating features." }, 
     { _id: cardIds[4][4], front: "What is NPM?", back: "npm is a package manager for Node. This means that you and other coders can share your JavaScript code easily, using a command line tool." }, 
+    { _id: cardIds[4][5], front: "What is a server?", back: "a computer or computer program which manages access to a centralized resource or service in a network." }, 
 ]
 },
 
@@ -830,8 +830,8 @@ const stats = [
 // Group 2
 {
     card: {_id: cardIds[1][1]},
-    user: {_id: userIds[1]},
-    group: {_id: groupIds[4]}, 
+    user: {_id: userIds[4]},
+    group: {_id: groupIds[2]}, 
     subject: {_id: subjectIds[1]},
     rating: 5, 
     seen: 1
