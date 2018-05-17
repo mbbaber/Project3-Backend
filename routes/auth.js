@@ -17,7 +17,7 @@ authRoutes.post("/login", (req, res, next) => {
       return;
     }
     if (!theUser) {
-      const err = new Error("Log in failed!");
+      const err = new Error("Username or password invalid");
       err.status = 400;
       next(err);
       return;
@@ -43,7 +43,7 @@ authRoutes.post("/signup", (req, res, next) => {
     //res.render("auth/signup", { message: "Indicate username and password" });
     const err = new Error("Username or password invalid");
     err.status = 400; //add generic client error (when the user f's up)
-    next();
+    next(err);
     return;
   }
 

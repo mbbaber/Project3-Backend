@@ -76,8 +76,9 @@ router.get("/stat/card/:cardId", (req, res, next) => {
 
 
 //API to get all the stats for a subject for the signed in user
-router.get("/stat/subject/:subjectId", (req, res, next) => {
-  var filter = { subject: req.params.subjectId }
+router.get("/stat/:groupId/:subjectId", (req, res, next) => {
+  var filter = { subject: req.params.subjectId, 
+                 group: req.params.groupId }
   
   if (req.user) { //if authenticated call
     filter.user = req.user
@@ -93,8 +94,9 @@ router.get("/stat/subject/:subjectId", (req, res, next) => {
 })
 
 //API to get all the stats for a subject by userId
-router.get("/stat/subject/:subjectId/:userId", (req, res, next) => {
-  var filter = { subject: req.params.subjectId }
+router.get("/stat/:groupId/:subjectId/:userId", (req, res, next) => {
+  var filter = { subject: req.params.subjectId,
+                 group: req.params.groupId  }
   
   
   filter.user = req.params.userId
