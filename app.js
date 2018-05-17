@@ -62,16 +62,16 @@ require('./passport')(app);
 
 
 const authRoutes = require('./routes/auth');
-app.use('/auth', authRoutes);
+app.use('/a/auth', authRoutes);
 
 const indexRoutes = require('./routes/index');
 app.use('/a', indexRoutes);
 
 const groupRoutes = require('./routes/group');
-app.use('/api', groupRoutes);
+app.use('/a/api', groupRoutes);
 
 const subRoutes = require('./routes/subjects');
-app.use('/subject', subRoutes);
+app.use('/a/subject', subRoutes);
       
 module.exports = app;
 
