@@ -23,7 +23,7 @@ function generateIds(n){
 const groupIds = generateIds(3),
     userIds = generateIds(22),
     subjectIds = generateIds(6),
-    statIds = generateIds(508);
+    statIds = generateIds(502);
 
 // 5 cards per subject   
 cardIds = [];
@@ -353,30 +353,6 @@ const stats = [
         seen: 3
     },
     {
-        card: {_id: cardIds[2][1]},
-        user: {_id: userIds[1]},
-        group: {_id: groupIds[1]}, 
-        subject: {_id: subjectIds[2]},
-        rating: 1, 
-        seen: 1
-    },
-    {
-        card: {_id: cardIds[2][2]},
-        user: {_id: userIds[1]},
-        group: {_id: groupIds[1]}, 
-        subject: {_id: subjectIds[2]},
-        rating: 1, 
-        seen: 2
-    },
-    {
-        card: {_id: cardIds[2][3]},
-        user: {_id: userIds[1]},
-        group: {_id: groupIds[1]}, 
-        subject: {_id: subjectIds[2]},
-        rating: 1, 
-        seen: 3
-    },
-    {
         card: {_id: cardIds[3][1]},
         user: {_id: userIds[1]},
         group: {_id: groupIds[1]}, 
@@ -545,30 +521,6 @@ const stats = [
     group: {_id: groupIds[1]}, 
     subject: {_id: subjectIds[1]},
     rating: 3, 
-    seen: 3
-},
-{
-    card: {_id: cardIds[2][1]},
-    user: {_id: userIds[2]},
-    group: {_id: groupIds[1]}, 
-    subject: {_id: subjectIds[2]},
-    rating: 3, 
-    seen: 1
-},
-{
-    card: {_id: cardIds[2][2]},
-    user: {_id: userIds[2]},
-    group: {_id: groupIds[1]}, 
-    subject: {_id: subjectIds[2]},
-    rating: 3, 
-    seen: 2
-},
-{
-    card: {_id: cardIds[2][3]},
-    user: {_id: userIds[2]},
-    group: {_id: groupIds[1]}, 
-    subject: {_id: subjectIds[2]},
-    rating: 1, 
     seen: 3
 },
 {
