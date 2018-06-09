@@ -35,7 +35,6 @@ authRoutes.post("/login", (req, res, next) => {
 authRoutes.post("/signup", (req, res, next) => {
   const { username, password, email } = req.body;
 
-  console.log(req.body);
 
   const rol = req.body.role;
   if (username === "" || password === "") {

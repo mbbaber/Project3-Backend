@@ -25,7 +25,7 @@ router.put('/subs-of-the-user/:userId/gr/:subId',(req, res, next)=>{
         {$pull: {subjects: req.params.subId}})
         .populate('subjects')
       .then((result)=>{
-        console.log(result.subjects)
+        // console.log(result.subjects)
         res.json(result.subjects);
       })
       .catch((err)=>{
@@ -45,11 +45,11 @@ router.post('/new-subject', (req, res, next)=>{
     } else {
       res.json(newSub);
       newSubId = newSub._id;
-      console.log('this new sub ************',newSubId);
+      // console.log('this new sub ************',newSubId);
       // console.log(req.user);
       User.findByIdAndUpdate(req.user, { $push: { subjects: newSubId } }, {new: true})
         .then(result => {
-          console.log(result);
+          // console.log(result);
           // res.json(result);
         })
         .catch(err => {
@@ -78,7 +78,7 @@ router.put('/add-card/:subId',(req, res, next)=>{
   )
   .populate('cards')
   .then((result)=>{
-    console.log(result)
+    // console.log(result)
     res.json(result)
   })
   .catch((err)=>{
@@ -108,7 +108,7 @@ router.put("/sub/:subId/card/:cardId", (req, res, next) => {
     {new:true})
     // .populate("cards")
     .then(result => {
-      console.log('deleted the card',result);
+      // console.log('deleted the card',result);
       res.json(result);
     })
     .catch(err => {

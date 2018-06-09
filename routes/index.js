@@ -129,7 +129,7 @@ router.patch("/stat", (req, res, next) => {
   //   next(); // show 404 if bad ObjectId format
   //   return;
 const { card, group, subject, rating } = req.body;
-console.log(req.user);
+// console.log(req.user);
   Stat.findOneAndUpdate( 
     {user: req.user,
       //"5af4551e2c4927aa694c05d9"
@@ -147,7 +147,7 @@ console.log(req.user);
     {upsert: true, new: true},
  )
  .then((result) => {
-    console.log(result)
+    // console.log(result)
     res.json(result)
  })
  .catch((err) => {

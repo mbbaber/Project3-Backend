@@ -36,7 +36,7 @@ router.put("/groups-of-the-user/:userId/gr/:groupId", (req, res, next) => {
     {$pull: { groups: req.params.groupId }})
     .populate("groups")
     .then(result => {
-      console.log(result.groups);
+      // console.log(result.groups);
       res.json(result.groups);
     })
     .catch(err => {
@@ -142,7 +142,7 @@ router.put("/us/:userId/gr/:groupId", (req, res, next) => {
           });
         });
       });
-      console.log("adding this user", req.params.userId);
+      // console.log("adding this user", req.params.userId);
     })
     .catch(err => {
       next(err);
@@ -220,7 +220,7 @@ const transport = nodemailer.createTransport({
 })
 
 router.post('/process-message', (req, res, next)=>{
-  const {sender, senderEmail, message, email } = req.body;
+  const {sender, senderEmail, message, email, group } = req.body;
     
     transport.sendMail({
       from: "Your Website <website@example.com>",
@@ -230,10 +230,12 @@ router.post('/process-message', (req, res, next)=>{
       Name: ${sender}
       Email: ${senderEmail}
       Message: ${message}`,
-      html: `
+      html: `<div>
       <h1>Great news!</h1>
-      <h2> ${sender} found you as his study-budy!</h2>
-      <p>Here's what they wrote:<br> ${message}</p>`
+      <h2> ${sender} found you in ${group} as their study-budy!</h2>
+      <p>Here's what they wrote:<br>"${message}"<br>
+      Email them back at: ${senderEmail}</p>
+      <div>`
     })
     .then((result)=>{
       res.json(result)
